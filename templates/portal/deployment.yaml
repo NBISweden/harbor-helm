@@ -89,17 +89,7 @@ spec:
           mountPath: /etc/harbor/ssl/portal
         {{- end }}
         - name: tmp
-          mountPath: /tmp/client_body_temp
-        - name: tmp
-          mountPath: /tmp/proxy_temp
-        - name: tmp
-          mountPath: /tmp/fastcgi_temp
-        - name: tmp
-          mountPath: /tmp/uwsgi_temp
-        - name: tmp
-          mountPath: /tmp/scgi_temp
-        - name: tmp
-          mountPath: /tmp/nginx.pid
+          mountPath: /tmp
         
       volumes:
       - name: tmp
