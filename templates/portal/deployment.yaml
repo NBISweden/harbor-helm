@@ -88,7 +88,22 @@ spec:
         - name: portal-internal-certs
           mountPath: /etc/harbor/ssl/portal
         {{- end }}
+        - name: tmp
+          mountPath: /tmp/client_body_temp
+        - name: tmp
+          mountPath: /tmp/proxy_temp
+        - name: tmp
+          mountPath: /tmp/fastcgi_temp
+        - name: tmp
+          mountPath: /tmp/uwsgi_temp
+        - name: tmp
+          mountPath: /tmp/scgi_temp
+        - name: tmp
+          mountPath: /tmp/nginx.pid
+        
       volumes:
+      - name: tmp
+        emptyDir: {}
       - name: portal-config
         configMap:
           name: "{{ template "harbor.portal" . }}"
