@@ -68,6 +68,7 @@ spec:
       - name: registry
         image: {{ .Values.registry.registry.image.repository }}:{{ .Values.registry.registry.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command: ["/usr/bin/registry_DO_NOT_USE_GC", "serve", "/etc/registry/config.yml"]
         livenessProbe:
           httpGet:
             path: /
@@ -163,6 +164,7 @@ spec:
       - name: registryctl
         image: {{ .Values.registry.controller.image.repository }}:{{ .Values.registry.controller.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command: ["/home/harbor/harbor_registryctl", "-c", "/etc/registryctl/config.yml"]
         livenessProbe:
           httpGet:
             path: /api/health
