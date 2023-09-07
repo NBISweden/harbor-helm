@@ -65,6 +65,7 @@ spec:
       - name: jobservice
         image: {{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command: ["/harbor/harbor_jobservice","-c","/etc/jobservice/config.yml"]
         livenessProbe:
           httpGet:
             path: /api/v1/stats
