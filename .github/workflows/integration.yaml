@@ -20,7 +20,7 @@ jobs:
           version: v0.17.0
           node_image: kindest/node:${{ matrix.k8s_version }}
           cluster_name: kind-cluster-${{ matrix.k8s_version }}
-          config: test/integration/kind-cluster.yaml
+          config: charts/harbor-helm/test/integration/kind-cluster.yaml
 
       - name: Install Nginx ingress controller
         run: |
