@@ -37,11 +37,11 @@ jobs:
           helm dependency update .
 
       - name: Run template for ingress expose
-        working-directory: ./harbor
+        working-directory: ./harbor/charts/harbor-helm
         run:
           helm template --set "expose.type=ingress" --output-dir $(mktemp -d -t output-XXXXXXXXXX) .
 
       - name: Run template for nodePort expose
-        working-directory: ./harbor
+        working-directory: ./harbor/charts/harbor-helm
         run:
           helm template --set "expose.type=nodePort,expose.tls.auto.commonName=127.0.0.1" --output-dir $(mktemp -d -t output-XXXXXXXXXX) .
