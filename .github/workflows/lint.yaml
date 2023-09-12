@@ -27,12 +27,12 @@ jobs:
 
       - name: Run lint
         continue-on-error: ${{ startsWith(matrix.helm_version, '2.') }}
-        working-directory: ./harbor
+        working-directory: ./harbor/charts/harbor-helm
         run:
           helm lint .
 
       - name: Update dependency
-        working-directory: ./harbor
+        working-directory: ./harbor/charts/harbor-helm
         run:
           helm dependency update .
 
