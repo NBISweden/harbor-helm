@@ -88,7 +88,12 @@ spec:
         - name: portal-internal-certs
           mountPath: /etc/harbor/ssl/portal
         {{- end }}
+        - name: tmp
+          mountPath: /tmp
+        
       volumes:
+      - name: tmp
+        emptyDir: {}
       - name: portal-config
         configMap:
           name: "{{ template "harbor.portal" . }}"

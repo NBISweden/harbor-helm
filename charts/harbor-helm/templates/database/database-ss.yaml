@@ -114,7 +114,11 @@ spec:
           subPath: {{ $database.subPath }}
         - name: shm-volume
           mountPath: /dev/shm
+        - name: rundir
+          mountPath: /run/postgresql
       volumes:
+      - name: rundir
+        emptyDir: {}
       - name: shm-volume
         emptyDir:
           medium: Memory
