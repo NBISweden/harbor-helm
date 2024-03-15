@@ -59,6 +59,8 @@ spec:
       - name: core
         image: {{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command:
+          - "/harbor/harbor_core"
         {{- if .Values.core.startupProbe.enabled }}
         startupProbe:
           httpGet:
