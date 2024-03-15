@@ -39,6 +39,13 @@ release: {{ .Release.Name }}
 app: "{{ template "harbor.name" . }}"
 {{- end -}}
 
+{{/* Helper for printing values from existing secrets*/}}
+{{- define "harbor.secretKeyHelper" -}}
+  {{- if and (not (empty .data)) (hasKey .data .key) }}
+    {{- index .data .key | b64dec -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "harbor.autoGenCert" -}}
   {{- if and .Values.expose.tls.enabled (eq .Values.expose.tls.certSource "auto") -}}
     {{- printf "true" -}}
@@ -89,7 +96,12 @@ app: "{{ template "harbor.name" . }}"
 
 {{- define "harbor.database.rawPassword" -}}
   {{- if eq .Values.database.type "internal" -}}
-    {{- .Values.database.internal.password -}}
+    {{- $existingSecret := lookup "v1" "Secret" .Release.Namespace (include "harbor.database" .) -}}
+    {{- if and (not (empty $existingSecret)) (hasKey $existingSecret.data "POSTGRES_PASSWORD") -}}
+      {{- .Values.database.internal.password | default (index $existingSecret.data "POSTGRES_PASSWORD") | b64dec -}}
+    {{- else -}}
+      {{- .Values.database.internal.password -}}
+    {{- end -}}
   {{- else -}}
     {{- .Values.database.external.password -}}
   {{- end -}}
@@ -144,12 +156,26 @@ app: "{{ template "harbor.name" . }}"
   {{- end }}
 {{- end -}}
 
+
+{{- define "harbor.redis.pwdfromsecret" -}}
+  {{- (lookup "v1" "Secret"  .Release.Namespace (.Values.redis.external.existingSecret)).data.REDIS_PASSWORD  | b64dec }}
+{{- end -}}
+
+{{- define "harbor.redis.cred" -}}
+  {{- with .Values.redis }}
+    {{- if (and (eq .type "external" ) (.external.existingSecret)) }}
+      {{- printf ":%s@" (include "harbor.redis.pwdfromsecret" $) }}
+    {{- else }}
+      {{- ternary (printf "%s:%s@" (.external.username | urlquery) (.external.password | urlquery)) "" (and (eq .type "external" ) (not (not .external.password))) }}
+    {{- end }}
+  {{- end }}
+{{- end -}}
+
 /*scheme://[:password@]host:port[/master_set]*/
 {{- define "harbor.redis.url" -}}
   {{- with .Values.redis }}
     {{- $path := ternary "" (printf "/%s" (include "harbor.redis.masterSet" $)) (not (include "harbor.redis.masterSet" $)) }}
-    {{- $cred := ternary (printf "%s:%s@" (.external.username | urlquery) (.external.password | urlquery)) "" (and (eq .type "external" ) (not (not .external.password))) }}
-    {{- printf "%s://%s%s%s" (include "harbor.redis.scheme" $) $cred (include "harbor.redis.addr" $) $path -}}
+    {{- printf "%s://%s%s%s" (include "harbor.redis.scheme" $) (include "harbor.redis.cred" $) (include "harbor.redis.addr" $) $path -}}
   {{- end }}
 {{- end -}}
 

@@ -1,4 +1,4 @@
-@Library('harbor@main') _
+@Library('harbor@2.10') _
 import io.goharbor.*
 
 class HarborChartFreshInstallPipelineExecutor extends FreshInstallPipelineExecutor implements Serializable {
@@ -116,7 +116,7 @@ def properties = {
 
 def caseSettings = {
     CaseSettings settings = new CaseSettings()
-    settings.cases = "gc,common,database,trivy"
+    settings.cases = "gc,trivy,common,database"
     return settings
 }
 
