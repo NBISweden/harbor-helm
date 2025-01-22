@@ -57,6 +57,13 @@ spec:
 {{- end }}
       containers:
       - name: nginx
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ['ALL']
+          seccompProfile:
+            type: RuntimeDefault
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         {{- $_ := set . "scheme" "HTTP" -}}

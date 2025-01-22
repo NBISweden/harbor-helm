@@ -41,6 +41,13 @@ spec:
       terminationGracePeriodSeconds: 120
       containers:
       - name: redis
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ['ALL']
+          seccompProfile:
+            type: RuntimeDefault
         image: {{ .Values.redis.internal.image.repository }}:{{ .Values.redis.internal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:

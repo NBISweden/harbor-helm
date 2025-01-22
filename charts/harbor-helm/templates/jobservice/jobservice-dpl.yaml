@@ -63,6 +63,13 @@ spec:
 {{- end }}
       containers:
       - name: jobservice
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ['ALL']
+          seccompProfile:
+            type: RuntimeDefault
         image: {{ .Values.jobservice.image.repository }}:{{ .Values.jobservice.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command: ["/harbor/harbor_jobservice","-c","/etc/jobservice/config.yml"]

@@ -54,6 +54,13 @@ spec:
 {{- end }}
       containers:
       - name: portal
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ['ALL']
+          seccompProfile:
+            type: RuntimeDefault
         image: {{ .Values.portal.image.repository }}:{{ .Values.portal.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
 {{- if .Values.portal.resources }}
