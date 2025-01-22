@@ -66,6 +66,13 @@ spec:
 {{- end }}
       containers:
       - name: registry
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ['ALL']
+          seccompProfile:
+            type: RuntimeDefault
         image: {{ .Values.registry.registry.image.repository }}:{{ .Values.registry.registry.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command: ["/usr/bin/registry_DO_NOT_USE_GC", "serve", "/etc/registry/config.yml"]
@@ -203,6 +210,13 @@ spec:
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}
         {{- end }}
       - name: registryctl
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ['ALL']
+          seccompProfile:
+            type: RuntimeDefault
         image: {{ .Values.registry.controller.image.repository }}:{{ .Values.registry.controller.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command: ["/home/harbor/harbor_registryctl", "-c", "/etc/registryctl/config.yml"]
